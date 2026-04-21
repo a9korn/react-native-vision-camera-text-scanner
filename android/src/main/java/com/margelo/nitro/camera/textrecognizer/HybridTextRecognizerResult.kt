@@ -14,11 +14,13 @@ class HybridTextRecognizerResult(
   override val text: String
     get() = result.text
 
+  // ML Kit's Text doesn't expose boundingBox/cornerPoints at the top level —
+  // derive them from the first block, or return defaults.
   override val boundingBox: Rect
-    get() = result.boundingBox?.toNitroRect() ?: Rect(0.0, 0.0, 0.0, 0.0)
+    get() = result.textBlocks.firstOrNull()?.boundingBox?.toNitroRect() ?: Rect(0.0, 0.0, 0.0, 0.0)
 
   override val cornerPoints: Array<Point>
-    get() = result.cornerPoints?.toNitroPoints() ?: emptyArray()
+    get() = result.textBlocks.firstOrNull()?.cornerPoints?.toNitroPoints() ?: emptyArray()
 
   override val blocks: Array<TextBlock>
     get() = result.textBlocks.map { block ->

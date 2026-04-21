@@ -11,10 +11,10 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import com.margelo.nitro.camera.CameraOrientation
 import com.margelo.nitro.camera.HybridCameraOutputSpec
 import com.margelo.nitro.camera.MediaType
 import com.margelo.nitro.camera.MirrorMode
+import com.margelo.nitro.camera.Orientation
 import com.margelo.nitro.camera.extensions.surfaceRotation
 import com.margelo.nitro.camera.public.NativeCameraOutput
 import java.util.concurrent.Executors
@@ -26,7 +26,7 @@ class HybridTextRecognizerOutput(
   ImageAnalysis.Analyzer,
   NativeCameraOutput {
   override val mediaType: MediaType = MediaType.VIDEO
-  override var outputOrientation: CameraOrientation = CameraOrientation.UP
+  override var outputOrientation: Orientation = Orientation.UP
     get() = field
     set(value) {
       field = value
