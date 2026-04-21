@@ -2,7 +2,7 @@
 //  HybridTextRecognizer.swift
 //  VisionCameraTextScanner
 //
-//  Created by Your Name on Date.
+//  Created by Alex Korn on 21.04.26.
 //
 
 import Vision

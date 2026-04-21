@@ -1,6 +1,17 @@
 # react-native-vision-camera-text-scanner
 
-Text scanning plugin for [react-native-vision-camera](https://reactnativevisioncamera.com) powered by ML Kit.
+Real-time text scanning plugin for [react-native-vision-camera](https://github.com/mrousavy/react-native-vision-camera) v5.
+
+- **iOS** — powered by [Apple Vision framework](https://developer.apple.com/documentation/vision/recognizing_text_in_images)
+- **Android** — powered by [Google ML Kit Text Recognition](https://developers.google.com/ml-kit/vision/text-recognition)
+- Built with [Nitro Modules](https://github.com/mrousavy/nitro) for maximum performance
+
+## Requirements
+
+- `react-native-vision-camera` >= 5.0.0
+- `react-native-nitro-modules` >= 0.35.0
+- iOS 15.1+
+- Android API 24+
 
 ## Installation
 
@@ -11,15 +22,24 @@ cd ios && pod install
 
 ## Usage
 
-### TextScanner Component
+### Option 1: TextScanner component
+
+Drop-in component — handles camera + scanning internally.
 
 ```tsx
+import { useEffect } from 'react'
+import { AppState } from 'react-native'
 import { TextScanner } from 'react-native-vision-camera-text-scanner'
-import { useAppState } from 'react-native'
 
 function App() {
-  const appState = useAppState()
-  const isActive = appState === 'active'
+  const [isActive, setIsActive] = useState(true)
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', state => {
+      setIsActive(state === 'active')
+    })
+    return () => sub.remove()
+  }, [])
 
   return (
     <TextScanner
@@ -27,36 +47,41 @@ function App() {
       isActive={isActive}
       languages={['en']}
       onTextScanned={(results) => {
-        console.log('Detected text:', results[0]?.text)
+        const words = results.flatMap(r => r.blocks).flatMap(b => b.lines).flatMap(l => l.words)
+        console.log('Detected words:', words.map(w => w.text))
       }}
-      onError={(error) => {
-        console.error('Text scanning error:', error)
-      }}
+      onError={(error) => console.error(error)}
     />
   )
 }
 ```
 
-### useTextRecognizerOutput Hook
+### Option 2: useTextRecognizerOutput hook
+
+For use with your own `Camera` component from `react-native-vision-camera`.
 
 ```tsx
+import { Camera, useCameraDevice } from 'react-native-vision-camera'
 import { useTextRecognizerOutput } from 'react-native-vision-camera-text-scanner'
 
-function MyComponent({ camera }) {
+function CameraScreen() {
+  const device = useCameraDevice('back')
+
   const textOutput = useTextRecognizerOutput({
     languages: ['en'],
     onTextScanned: (results) => {
-      // Filter for numeric values
       const numericWords = results
         .flatMap(r => r.blocks)
         .flatMap(b => b.lines)
         .flatMap(l => l.words)
         .filter(w => /^\d+$/.test(w.text))
 
-      console.log('Numeric values found:', numericWords)
+      console.log('Numbers found:', numericWords.map(w => w.text))
     },
     onError: (error) => console.error(error),
   })
+
+  if (!device) return null
 
   return (
     <Camera
@@ -69,61 +94,62 @@ function MyComponent({ camera }) {
 }
 ```
 
-### Frame Processor
-
-```tsx
-import { useTextRecognizer, useFrameOutput } from 'react-native-vision-camera-text-scanner'
-
-function MyComponent() {
-  const textRecognizer = useTextRecognizer({ languages: ['en'] })
-
-  const frameOutput = useFrameOutput({
-    onFrame: (frame) => {
-      'worklet'
-      const results = textRecognizer.recognizeText(frame)
-      console.log('Detected text:', results.length)
-      frame.dispose()
-    }
-  })
-
-  return (
-    <Camera
-      style={{ flex: 1 }}
-      isActive={true}
-      device={device}
-      outputs={[frameOutput]}
-    />
-  )
-}
-```
-
 ## API
 
-### TextScanner Props
+### `<TextScanner>` Props
 
-- `style` - View style
-- `isActive` - Whether scanning is active
-- `languages` - Language hints for ML Kit (e.g., `['en', 'de']`)
-- `outputResolution` - `'preview'` (default) or `'full'`
-- `onTextScanned` - Callback with detected text results
-- `onError` - Error callback
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isActive` | `boolean` | — | Whether scanning is active |
+| `languages` | `string[]` | — | Language hints (e.g. `['en', 'de']`) |
+| `outputResolution` | `'preview' \| 'full'` | `'preview'` | Resolution to scan at |
+| `onTextScanned` | `(results: TextRecognizerResult[]) => void` | — | Called with detected text |
+| `onError` | `(error: Error) => void` | — | Called on error |
+| `style` | `ViewStyle` | — | Style for the camera view |
 
-### TextRecognizerResult
+### `useTextRecognizerOutput(options)` Options
 
-The result contains a hierarchical structure:
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `languages` | `string[]` | — | Language hints |
+| `outputResolution` | `'preview' \| 'full'` | `'preview'` | Resolution to scan at |
+| `onTextScanned` | `(results: TextRecognizerResult[]) => void` | — | Called with detected text |
+| `onError` | `(error: Error) => void` | — | Called on error |
 
-- `text` - Full raw text
-- `boundingBox` - Bounding box of entire result
-- `cornerPoints` - Corner points
-- `blocks` - Array of text blocks
-  - `lines` - Array of text lines
-    - `words` - Array of words
+### `TextRecognizerResult`
 
-Each level (block, line, word) has:
-- `text` - Text content
-- `boundingBox` - Bounding box coordinates
-- `cornerPoints` - Corner points
+```ts
+type TextRecognizerResult = {
+  text: string           // Full raw text of the result
+  boundingBox: Rect
+  cornerPoints: Point[]
+  blocks: TextBlock[]
+}
+
+type TextBlock = {
+  text: string
+  boundingBox: Rect
+  cornerPoints: Point[]
+  lines: TextLine[]
+}
+
+type TextLine = {
+  text: string
+  boundingBox: Rect
+  cornerPoints: Point[]
+  words: TextWord[]
+}
+
+type TextWord = {
+  text: string
+  boundingBox: Rect
+  cornerPoints: Point[]
+}
+
+type Rect = { x: number; y: number; width: number; height: number }
+type Point = { x: number; y: number }
+```
 
 ## License
 
-MIT
+MIT © [Alex Korn](https://github.com/a9korn)
