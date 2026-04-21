@@ -1,0 +1,5 @@
+export * from './factory';
+export * from './specs/TextRecognizer.nitro';
+export * from './useTextRecognizer';
+export * from './useTextRecognizerOutput';
+export * from './views/TextScanner';
