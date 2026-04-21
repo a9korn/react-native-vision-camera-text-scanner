@@ -10,11 +10,11 @@ import androidx.camera.core.resolutionselector.ResolutionStrategy
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.margelo.nitro.camera.CameraOrientation
 import com.margelo.nitro.camera.HybridCameraOutputSpec
 import com.margelo.nitro.camera.MediaType
 import com.margelo.nitro.camera.MirrorMode
-import com.margelo.nitro.camera.Orientation
-import com.margelo.nitro.camera.barcodescanner.extensions.toMLBarcodeScannerOptions
 import com.margelo.nitro.camera.extensions.surfaceRotation
 import com.margelo.nitro.camera.public.NativeCameraOutput
 import java.util.concurrent.Executors
@@ -26,7 +26,7 @@ class HybridTextRecognizerOutput(
   ImageAnalysis.Analyzer,
   NativeCameraOutput {
   override val mediaType: MediaType = MediaType.VIDEO
-  override var outputOrientation: Orientation = Orientation.UP
+  override var outputOrientation: CameraOrientation = CameraOrientation.UP
     get() = field
     set(value) {
       field = value
@@ -35,7 +35,7 @@ class HybridTextRecognizerOutput(
   override val mirrorMode: MirrorMode = MirrorMode.AUTO
   private var imageAnalysis: ImageAnalysis? = null
   private val executor = Executors.newSingleThreadExecutor()
-  private val recognizer: TextRecognizer = TextRecognition.getClient()
+  private val recognizer: TextRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
   private var isBusy = AtomicBoolean(false)
   private val recommendedResolutionForTextScanning = Size(1280, 720)
 
@@ -78,20 +78,17 @@ class HybridTextRecognizerOutput(
   override fun analyze(imageProxy: ImageProxy) {
     try {
       if (!isBusy.compareAndSet(false, true)) {
-        // pipeline is busy. close image & return
         imageProxy.close()
         return
       }
 
       val mediaImage = imageProxy.image
       if (mediaImage == null) {
-        // media image is null - error & return.
         imageProxy.close()
         isBusy.set(false)
         options.onError(Error("`ImageProxy` does not have an `Image`!"))
         return
       }
-      // TODO: Support MirrorMode?
       val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
       recognizer
         .process(inputImage)
