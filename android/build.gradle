@@ -1,0 +1,67 @@
+buildscript {
+  ext {
+    buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
+    minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+    compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
+    targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '35')
+    kotlinVersion = findProperty('android.kotlinVersion') ?: '2.1.0'
+    nitroModulesVersion = findProperty('mrousavy.nitroModulesVersion') ?: '0.35.4'
+  }
+  repositories {
+    google()
+    mavenCentral()
+  }
+  dependencies {
+    classpath('com.android.tools.build:gradle:8.8.3')
+    classpath('com.facebook.react:react-native-gradle-plugin')
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.facebook.react'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply from: '../nitrogen/generated/android/VisionCameraTextScanner+autolinking.gradle'
+apply from: './fix-prefab.gradle'
+
+android {
+  ndkVersion rootProject.ext.ndkVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+  compileSdk rootProject.ext.compileSdkVersion
+
+  namespace 'com.margelo.nitro.camera.textrecognizer'
+
+  defaultConfig {
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    externalNativeBuild {
+      cmake {
+        path "../../src/main/cpp/VisionCameraTextScanner.cpp"
+      }
+    }
+  }
+
+  externalNativeBuild {
+    cmake {
+      path "../../src/main/cpp/VisionCameraTextScanner.cpp"
+    }
+  }
+
+  packagingOptions {
+    pickFirst '**/libc++_shared.so'
+  }
+}
+
+dependencies {
+  implementation("com.google.mlkit:text-recognition:16.0.0") {
+    exclude group: 'com.google.mlkit', module: 'text-recognition-common'
+  }
+  implementation("com.margelo:nitro-modules:$nitroModulesVersion")
+
+  // CameraX dependencies
+  def camerax_version = '1.4.0'
+  implementation "androidx.camera:camera-core:$camerax_version"
+  implementation "androidx.camera:camera-camera2:$camerax_version"
+  implementation "androidx.camera:camera-lifecycle:$camerax_version"
+  implementation "androidx.camera:camera-view:$camerax_version"
+}

@@ -1,0 +1,26 @@
+def applyPrefabArtifacts(DependencyArtifact artifact) {
+    // Add prefab dependencies to the CMake target
+    if (artifact.class == com.android.build.api.dependency.Type.AAR) {
+        // For AAR libraries, we need to extract and link them
+        repositories.each { repo ->
+            def artifactPath = repo.getArtifactFile(artifact)
+            if (artifactPath.exists()) {
+                // Extract AAR and link native libraries
+                def aarDir = new File(buildDir, "extracted_aar_${artifact.name}")
+                if (!aarDir.exists()) {
+                    aarDir.mkdirs()
+                    project.zipTree(artifactPath).matching { include 'jni/**/*' }.each { f ->
+                        copy {
+                            from f
+                            into aarDir
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+def apply_from_variant(String cmakeFile) {
+    // For prefab support
+}
