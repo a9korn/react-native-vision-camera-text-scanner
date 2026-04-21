@@ -1,16 +1,30 @@
-cmake_minimum_required(VERSION 3.18.1)
+project(VisionCameraTextScanner)
+cmake_minimum_required(VERSION 3.9.0)
 
-project("VisionCameraTextScanner")
+set (PACKAGE_NAME VisionCameraTextScanner)
+set (CMAKE_VERBOSE_MAKEFILE ON)
+set (CMAKE_CXX_STANDARD 20)
 
-# Load autolinking cmake file
-include(${CMAKE_SOURCE_DIR}/../nitrogen/generated/android/VisionCameraTextScanner+autolinking.cmake)
-
-add_library(${androidCxxLibName} SHARED
+# Define C++ library and add all sources
+add_library(${PACKAGE_NAME} SHARED
   src/main/cpp/cpp-adapter.cpp
 )
 
-target_link_libraries(${androidCxxLibName}
+# Add Nitrogen specs :)
+include(${CMAKE_SOURCE_DIR}/../nitrogen/generated/android/VisionCameraTextScanner+autolinking.cmake)
+
+# Set up local includes
+include_directories(
+  "src/main/cpp"
+)
+
+find_library(LOG_LIB log)
+find_package(react-native-vision-camera REQUIRED)
+
+# Link all libraries together
+target_link_libraries(
+  ${PACKAGE_NAME}
+  ${LOG_LIB}
   android
-  log
-  jnigraphics
+  react-native-vision-camera::VisionCamera
 )
