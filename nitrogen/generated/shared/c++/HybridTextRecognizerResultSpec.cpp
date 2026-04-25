@@ -18,6 +18,8 @@ namespace margelo::nitro::camera::textrecognizer {
       prototype.registerHybridGetter("blocks", &HybridTextRecognizerResultSpec::getBlocks);
       prototype.registerHybridGetter("boundingBox", &HybridTextRecognizerResultSpec::getBoundingBox);
       prototype.registerHybridGetter("cornerPoints", &HybridTextRecognizerResultSpec::getCornerPoints);
+      prototype.registerHybridGetter("frameWidth", &HybridTextRecognizerResultSpec::getFrameWidth);
+      prototype.registerHybridGetter("frameHeight", &HybridTextRecognizerResultSpec::getFrameHeight);
     });
   }
 

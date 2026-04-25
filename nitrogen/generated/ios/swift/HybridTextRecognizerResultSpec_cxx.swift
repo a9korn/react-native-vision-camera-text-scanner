@@ -160,6 +160,20 @@ open class HybridTextRecognizerResultSpec_cxx {
       }()
     }
   }
+  
+  public final var frameWidth: Double {
+    @inline(__always)
+    get {
+      return self.__implementation.frameWidth
+    }
+  }
+  
+  public final var frameHeight: Double {
+    @inline(__always)
+    get {
+      return self.__implementation.frameHeight
+    }
+  }
 
   // Methods
   

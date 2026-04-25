@@ -93,6 +93,16 @@ export interface TextRecognizerResult
    * The corner points of the complete text recognition result.
    */
   readonly cornerPoints: Point[]
+  /**
+   * Width of the processed frame in pixels (display/upright orientation).
+   * Use together with frameHeight to correctly map normalized bounding boxes
+   * to view coordinates accounting for cover-mode cropping.
+   */
+  readonly frameWidth: number
+  /**
+   * Height of the processed frame in pixels (display/upright orientation).
+   */
+  readonly frameHeight: number
 }
 
 /**

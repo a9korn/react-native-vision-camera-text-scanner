@@ -57,6 +57,8 @@ namespace margelo::nitro::camera::textrecognizer {
       virtual std::vector<TextBlock> getBlocks() = 0;
       virtual Rect getBoundingBox() = 0;
       virtual std::vector<Point> getCornerPoints() = 0;
+      virtual double getFrameWidth() = 0;
+      virtual double getFrameHeight() = 0;
 
     public:
       // Methods

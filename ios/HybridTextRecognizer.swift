@@ -16,8 +16,8 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
   }
 
   func recognizeText(frame: any HybridFrameSpec) throws -> [any HybridTextRecognizerResultSpec] {
-    let observations = try performVisionRecognition(frame: frame)
-    return [HybridTextRecognizerResult(observations: observations)]
+    let (observations, frameWidth, frameHeight) = try performVisionRecognition(frame: frame)
+    return [HybridTextRecognizerResult(observations: observations, frameWidth: frameWidth, frameHeight: frameHeight)]
   }
 
   func recognizeTextAsync(frame: any HybridFrameSpec) throws -> Promise<[any HybridTextRecognizerResultSpec]> {
@@ -25,8 +25,8 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
 
     DispatchQueue.global(qos: .userInitiated).async {
       do {
-        let observations = try self.performVisionRecognition(frame: frame)
-        let result = HybridTextRecognizerResult(observations: observations)
+        let (observations, frameWidth, frameHeight) = try self.performVisionRecognition(frame: frame)
+        let result = HybridTextRecognizerResult(observations: observations, frameWidth: frameWidth, frameHeight: frameHeight)
         promise.resolve(withResult: [result])
       } catch {
         promise.reject(withError: error)
@@ -36,7 +36,7 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
     return promise
   }
 
-  private func performVisionRecognition(frame: any HybridFrameSpec) throws -> [VNRecognizedTextObservation] {
+  private func performVisionRecognition(frame: any HybridFrameSpec) throws -> ([VNRecognizedTextObservation], Int, Int) {
     guard let nativeFrame = frame as? any NativeFrame else {
       throw RuntimeError.error(withMessage: "Frame is not of type `NativeFrame`!")
     }
@@ -47,13 +47,17 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
       throw RuntimeError.error(withMessage: "Failed to get pixel buffer from sample buffer!")
     }
 
+    let bufW = CVPixelBufferGetWidth(pixelBuffer)
+    let bufH = CVPixelBufferGetHeight(pixelBuffer)
+    let orientation = frame.orientation
+    let isRotated = orientation == .up || orientation == .down
+    let frameWidth = isRotated ? bufH : bufW
+    let frameHeight = isRotated ? bufW : bufH
+
     var observations: [VNRecognizedTextObservation] = []
 
     let request = VNRecognizeTextRequest { request, error in
-      if let error = error {
-        print("Vision error: \(error)")
-        return
-      }
+      if error != nil { return }
       guard let results = request.results as? [VNRecognizedTextObservation] else {
         return
       }
@@ -63,10 +67,10 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
     request.recognitionLevel = .accurate
     request.usesLanguageCorrection = true
 
-    let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: frame.orientation.toCGImagePropertyOrientation(), options: [:])
+    let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation.toCGImagePropertyOrientation(), options: [:])
 
     try handler.perform([request])
 
-    return observations
+    return (observations, frameWidth, frameHeight)
   }
 }

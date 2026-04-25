@@ -50,7 +50,11 @@
     "type": "git",
     "url": "git+https://github.com/a9korn/react-native-vision-camera-text-scanner.git"
   },
-  "author": { "name": "Alex Korn", "email": "a9korn@gmail.com", "url": "https://github.com/a9korn" },
+  "author": {
+    "name": "Alex Korn",
+    "email": "a9korn@gmail.com",
+    "url": "https://github.com/a9korn"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/a9korn/react-native-vision-camera-text-scanner/issues"
