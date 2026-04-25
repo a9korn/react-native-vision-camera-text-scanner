@@ -17,7 +17,7 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
   let requiresAudioInput: Bool = false
   let requiresDepthFormat: Bool = false
   let mediaType: MediaType = .video
-  var outputOrientation: Orientation = .up
+  var outputOrientation: CameraOrientation = .up
 
   let streamType: StreamType = .video
   var targetResolution: ResolutionRule {
@@ -61,7 +61,7 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
     connection.preferredVideoStabilizationMode = .off
   }
 
-  private func performVisionRecognition(pixelBuffer: CVPixelBuffer, orientation: Orientation, completion: @escaping ([HybridTextRecognizerResult]) -> Void) {
+  private func performVisionRecognition(pixelBuffer: CVPixelBuffer, orientation: CameraOrientation, completion: @escaping ([HybridTextRecognizerResult]) -> Void) {
     var recognizedObservations: [VNRecognizedTextObservation] = []
 
     let request = VNRecognizeTextRequest { request, error in
