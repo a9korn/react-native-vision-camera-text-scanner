@@ -40,6 +40,14 @@ abstract class HybridTextRecognizerResultSpec: HybridObject() {
   @get:DoNotStrip
   @get:Keep
   abstract val cornerPoints: Array<Point>
+  
+  @get:DoNotStrip
+  @get:Keep
+  abstract val frameWidth: Double
+  
+  @get:DoNotStrip
+  @get:Keep
+  abstract val frameHeight: Double
 
   // Methods
   

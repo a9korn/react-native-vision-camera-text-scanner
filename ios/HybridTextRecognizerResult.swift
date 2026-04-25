@@ -10,11 +10,18 @@ import NitroModules
 
 final class HybridTextRecognizerResult: HybridTextRecognizerResultSpec {
   private let observations: [VNRecognizedTextObservation]
+  private let _frameWidth: Double
+  private let _frameHeight: Double
 
-  init(observations: [VNRecognizedTextObservation]) {
+  init(observations: [VNRecognizedTextObservation], frameWidth: Int, frameHeight: Int) {
     self.observations = observations
+    self._frameWidth = Double(frameWidth)
+    self._frameHeight = Double(frameHeight)
     super.init()
   }
+
+  var frameWidth: Double { _frameWidth }
+  var frameHeight: Double { _frameHeight }
 
   var text: String {
     return observations.compactMap { observation in

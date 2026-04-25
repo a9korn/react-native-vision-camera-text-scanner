@@ -41,7 +41,13 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
         return
       }
 
-      self.performVisionRecognition(pixelBuffer: pixelBuffer, orientation: self.outputOrientation) { results in
+      let bufW = CVPixelBufferGetWidth(pixelBuffer)
+      let bufH = CVPixelBufferGetHeight(pixelBuffer)
+      // After Vision rotates the buffer, portrait frame dims are swapped for landscape sensors.
+      let isRotated = self.outputOrientation == .up || self.outputOrientation == .down
+      let frameW = isRotated ? bufH : bufW
+      let frameH = isRotated ? bufW : bufH
+      self.performVisionRecognition(pixelBuffer: pixelBuffer, orientation: self.outputOrientation, frameWidth: frameW, frameHeight: frameH) { results in
         isScanning = false
         options.onTextScanned(results)
       }
@@ -61,14 +67,11 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
     connection.preferredVideoStabilizationMode = .off
   }
 
-  private func performVisionRecognition(pixelBuffer: CVPixelBuffer, orientation: CameraOrientation, completion: @escaping ([HybridTextRecognizerResult]) -> Void) {
+  private func performVisionRecognition(pixelBuffer: CVPixelBuffer, orientation: CameraOrientation, frameWidth: Int, frameHeight: Int, completion: @escaping ([HybridTextRecognizerResult]) -> Void) {
     var recognizedObservations: [VNRecognizedTextObservation] = []
 
     let request = VNRecognizeTextRequest { request, error in
-      if let error = error {
-        print("Vision error: \(error)")
-        return
-      }
+      if error != nil { return }
       guard let observations = request.results as? [VNRecognizedTextObservation] else {
         return
       }
@@ -83,10 +86,9 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
     DispatchQueue.global(qos: .userInitiated).async {
       do {
         try handler.perform([request])
-        let result = HybridTextRecognizerResult(observations: recognizedObservations)
+        let result = HybridTextRecognizerResult(observations: recognizedObservations, frameWidth: frameWidth, frameHeight: frameHeight)
         completion([result])
       } catch {
-        print("Vision perform error: \(error)")
         completion([])
       }
     }

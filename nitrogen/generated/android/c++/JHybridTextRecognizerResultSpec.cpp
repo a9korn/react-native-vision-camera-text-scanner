@@ -99,6 +99,16 @@ namespace margelo::nitro::camera::textrecognizer {
       return __vector;
     }();
   }
+  double JHybridTextRecognizerResultSpec::getFrameWidth() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<double()>("getFrameWidth");
+    auto __result = method(_javaPart);
+    return __result;
+  }
+  double JHybridTextRecognizerResultSpec::getFrameHeight() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<double()>("getFrameHeight");
+    auto __result = method(_javaPart);
+    return __result;
+  }
 
   // Methods
   

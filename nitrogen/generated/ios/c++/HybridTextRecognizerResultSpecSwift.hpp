@@ -92,6 +92,12 @@ namespace margelo::nitro::camera::textrecognizer {
       auto __result = _swiftPart.getCornerPoints();
       return __result;
     }
+    inline double getFrameWidth() noexcept override {
+      return _swiftPart.getFrameWidth();
+    }
+    inline double getFrameHeight() noexcept override {
+      return _swiftPart.getFrameHeight();
+    }
 
   public:
     // Methods

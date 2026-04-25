@@ -6,19 +6,25 @@ import com.google.mlkit.vision.text.Text
 // Normalize to (0–1) range so the JS side gets the same convention as iOS.
 class HybridTextRecognizerResult(
   private val result: Text,
-  private val frameWidth: Int,
-  private val frameHeight: Int,
+  frameWidth: Int,
+  frameHeight: Int,
 ) : HybridTextRecognizerResultSpec() {
 
+  private val _frameWidth: Int = frameWidth
+  private val _frameHeight: Int = frameHeight
+
   private fun android.graphics.Rect.toNormalizedRect(): Rect = Rect(
-    left = left.toDouble() / frameWidth,
-    right = right.toDouble() / frameWidth,
-    top = top.toDouble() / frameHeight,
-    bottom = bottom.toDouble() / frameHeight,
+    left = left.toDouble() / _frameWidth,
+    right = right.toDouble() / _frameWidth,
+    top = top.toDouble() / _frameHeight,
+    bottom = bottom.toDouble() / _frameHeight,
   )
 
   private fun Array<android.graphics.Point>.toNormalizedPoints(): Array<Point> =
-    map { Point(it.x.toDouble() / frameWidth, it.y.toDouble() / frameHeight) }.toTypedArray()
+    map { Point(it.x.toDouble() / _frameWidth, it.y.toDouble() / _frameHeight) }.toTypedArray()
+
+  override val frameWidth: Double = _frameWidth.toDouble()
+  override val frameHeight: Double = _frameHeight.toDouble()
 
   override val text: String
     get() = result.text

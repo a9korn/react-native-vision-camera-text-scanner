@@ -14,6 +14,8 @@ public protocol HybridTextRecognizerResultSpec_protocol: HybridObject {
   var blocks: [TextBlock] { get }
   var boundingBox: Rect { get }
   var cornerPoints: [Point] { get }
+  var frameWidth: Double { get }
+  var frameHeight: Double { get }
 
   // Methods
   

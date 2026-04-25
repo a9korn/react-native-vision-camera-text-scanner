@@ -54,6 +54,8 @@ namespace margelo::nitro::camera::textrecognizer {
     std::vector<TextBlock> getBlocks() override;
     Rect getBoundingBox() override;
     std::vector<Point> getCornerPoints() override;
+    double getFrameWidth() override;
+    double getFrameHeight() override;
 
   public:
     // Methods
