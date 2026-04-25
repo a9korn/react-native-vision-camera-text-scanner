@@ -1,5 +1,5 @@
 //
-//  Orientation+Extensions.swift
+//  CameraOrientation+Extensions.swift
 //  VisionCameraTextScanner
 //
 //  Created by Your Name on Date.
@@ -7,7 +7,7 @@
 
 import VisionCamera
 
-extension Orientation {
+extension CameraOrientation {
   func toCGImagePropertyOrientation() -> CGImagePropertyOrientation {
     switch self {
     case .up: return .up
