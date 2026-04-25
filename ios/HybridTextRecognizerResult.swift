@@ -22,17 +22,22 @@ final class HybridTextRecognizerResult: HybridTextRecognizerResultSpec {
     }.joined(separator: " ")
   }
 
+  // Vision Framework uses bottom-left origin with normalized (0–1) coordinates.
+  // Convert to top-left origin (UIKit/RN convention) so callers get a consistent system.
+  private func visionRectToTopLeft(_ box: CGRect) -> Rect {
+    return Rect(
+      left: box.origin.x,
+      right: box.origin.x + box.size.width,
+      top: 1.0 - (box.origin.y + box.size.height),
+      bottom: 1.0 - box.origin.y
+    )
+  }
+
   var boundingBox: Rect {
     guard let firstObservation = observations.first else {
       return Rect(left: 0, right: 0, top: 0, bottom: 0)
     }
-    let box = firstObservation.boundingBox
-    return Rect(
-      left: box.origin.x,
-      right: box.origin.x + box.size.width,
-      top: box.origin.y,
-      bottom: box.origin.y + box.size.height
-    )
+    return visionRectToTopLeft(firstObservation.boundingBox)
   }
 
   var cornerPoints: [Point] {
@@ -40,11 +45,12 @@ final class HybridTextRecognizerResult: HybridTextRecognizerResultSpec {
       return []
     }
     let box = firstObservation.boundingBox
+    let r = visionRectToTopLeft(box)
     return [
-      Point(x: box.origin.x, y: box.origin.y),
-      Point(x: box.origin.x + box.size.width, y: box.origin.y),
-      Point(x: box.origin.x + box.size.width, y: box.origin.y + box.size.height),
-      Point(x: box.origin.x, y: box.origin.y + box.size.height)
+      Point(x: r.left, y: r.top),
+      Point(x: r.right, y: r.top),
+      Point(x: r.right, y: r.bottom),
+      Point(x: r.left, y: r.bottom),
     ]
   }
 
@@ -59,40 +65,25 @@ final class HybridTextRecognizerResult: HybridTextRecognizerResultSpec {
         )
       }
 
-      let box = observation.boundingBox
+      let r = visionRectToTopLeft(observation.boundingBox)
       return TextBlock(
         text: candidate.string,
-        boundingBox: Rect(
-          left: box.origin.x,
-          right: box.origin.x + box.size.width,
-          top: box.origin.y,
-          bottom: box.origin.y + box.size.height
-        ),
+        boundingBox: r,
         cornerPoints: [
-          Point(x: box.origin.x, y: box.origin.y),
-          Point(x: box.origin.x + box.size.width, y: box.origin.y),
-          Point(x: box.origin.x + box.size.width, y: box.origin.y + box.size.height),
-          Point(x: box.origin.x, y: box.origin.y + box.size.height)
+          Point(x: r.left, y: r.top),
+          Point(x: r.right, y: r.top),
+          Point(x: r.right, y: r.bottom),
+          Point(x: r.left, y: r.bottom),
         ],
         lines: [
           TextLine(
             text: candidate.string,
-            boundingBox: Rect(
-              left: box.origin.x,
-              right: box.origin.x + box.size.width,
-              top: box.origin.y,
-              bottom: box.origin.y + box.size.height
-            ),
+            boundingBox: r,
             cornerPoints: [],
             words: [
               TextWord(
                 text: candidate.string,
-                boundingBox: Rect(
-                  left: box.origin.x,
-                  right: box.origin.x + box.size.width,
-                  top: box.origin.y,
-                  bottom: box.origin.y + box.size.height
-                ),
+                boundingBox: r,
                 cornerPoints: []
               )
             ]
