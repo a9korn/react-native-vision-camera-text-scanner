@@ -89,11 +89,16 @@ class HybridTextRecognizerOutput(
         options.onError(Error("`ImageProxy` does not have an `Image`!"))
         return
       }
-      val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+      val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+      val inputImage = InputImage.fromMediaImage(mediaImage, rotationDegrees)
+      // After ML Kit applies rotation, coordinates are in the display (upright) frame.
+      // For 90°/270° the sensor width/height are swapped relative to the display.
+      val displayWidth = if (rotationDegrees == 90 || rotationDegrees == 270) imageProxy.height else imageProxy.width
+      val displayHeight = if (rotationDegrees == 90 || rotationDegrees == 270) imageProxy.width else imageProxy.height
       recognizer
         .process(inputImage)
         .addOnSuccessListener { result ->
-          val hybridResult = HybridTextRecognizerResult(result)
+          val hybridResult = HybridTextRecognizerResult(result, displayWidth, displayHeight)
           options.onTextScanned(arrayOf(hybridResult))
         }.addOnFailureListener { error ->
           options.onError(error)
