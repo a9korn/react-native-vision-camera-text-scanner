@@ -22,7 +22,7 @@ data class TextLine(
   val text: String,
   @DoNotStrip
   @Keep
-  val boundingBox: Rect,
+  val boundingBox: BoundingBox,
   @DoNotStrip
   @Keep
   val cornerPoints: Array<Point>,
@@ -40,7 +40,7 @@ data class TextLine(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(text: String, boundingBox: Rect, cornerPoints: Array<Point>, words: Array<TextWord>): TextLine {
+    private fun fromCpp(text: String, boundingBox: BoundingBox, cornerPoints: Array<Point>, words: Array<TextWord>): TextLine {
       return TextLine(text, boundingBox, cornerPoints, words)
     }
   }

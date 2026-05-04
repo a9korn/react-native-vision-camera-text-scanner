@@ -37,6 +37,7 @@ export function useTextRecognizerOutput({
           stableOnError.current(error)
         },
       }),
-    [languages, outputResolution],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(languages), outputResolution],
   )
 }

@@ -13,11 +13,11 @@ class HybridTextRecognizerResult(
   private val _frameWidth: Int = frameWidth
   private val _frameHeight: Int = frameHeight
 
-  private fun android.graphics.Rect.toNormalizedRect(): Rect = Rect(
-    left = left.toDouble() / _frameWidth,
-    right = right.toDouble() / _frameWidth,
-    top = top.toDouble() / _frameHeight,
-    bottom = bottom.toDouble() / _frameHeight,
+  private fun android.graphics.Rect.toNormalizedBoundingBox(): BoundingBox = BoundingBox(
+    x = left.toDouble() / _frameWidth,
+    y = top.toDouble() / _frameHeight,
+    width = (right - left).toDouble() / _frameWidth,
+    height = (bottom - top).toDouble() / _frameHeight,
   )
 
   private fun Array<android.graphics.Point>.toNormalizedPoints(): Array<Point> =
@@ -29,27 +29,49 @@ class HybridTextRecognizerResult(
   override val text: String
     get() = result.text
 
-  override val boundingBox: Rect
-    get() = result.textBlocks.firstOrNull()?.boundingBox?.toNormalizedRect() ?: Rect(0.0, 0.0, 0.0, 0.0)
+  override val boundingBox: BoundingBox
+    get() {
+      val rects = result.textBlocks.mapNotNull { it.boundingBox }
+      if (rects.isEmpty()) return BoundingBox(0.0, 0.0, 0.0, 0.0)
+      val left = rects.minOf { it.left }
+      val top = rects.minOf { it.top }
+      val right = rects.maxOf { it.right }
+      val bottom = rects.maxOf { it.bottom }
+      return BoundingBox(
+        x = left.toDouble() / _frameWidth,
+        y = top.toDouble() / _frameHeight,
+        width = (right - left).toDouble() / _frameWidth,
+        height = (bottom - top).toDouble() / _frameHeight,
+      )
+    }
 
   override val cornerPoints: Array<Point>
-    get() = result.textBlocks.firstOrNull()?.cornerPoints?.toNormalizedPoints() ?: emptyArray()
+    get() {
+      val b = boundingBox
+      if (b.width == 0.0 && b.height == 0.0) return emptyArray()
+      return arrayOf(
+        Point(b.x, b.y),
+        Point(b.x + b.width, b.y),
+        Point(b.x + b.width, b.y + b.height),
+        Point(b.x, b.y + b.height),
+      )
+    }
 
   override val blocks: Array<TextBlock>
     get() = result.textBlocks.map { block ->
       TextBlock(
         text = block.text,
-        boundingBox = block.boundingBox?.toNormalizedRect() ?: Rect(0.0, 0.0, 0.0, 0.0),
+        boundingBox = block.boundingBox?.toNormalizedBoundingBox() ?: BoundingBox(0.0, 0.0, 0.0, 0.0),
         cornerPoints = block.cornerPoints?.toNormalizedPoints() ?: emptyArray(),
         lines = block.lines.map { line ->
           TextLine(
             text = line.text,
-            boundingBox = line.boundingBox?.toNormalizedRect() ?: Rect(0.0, 0.0, 0.0, 0.0),
+            boundingBox = line.boundingBox?.toNormalizedBoundingBox() ?: BoundingBox(0.0, 0.0, 0.0, 0.0),
             cornerPoints = line.cornerPoints?.toNormalizedPoints() ?: emptyArray(),
             words = line.elements.map { element ->
               TextWord(
                 text = element.text,
-                boundingBox = element.boundingBox?.toNormalizedRect() ?: Rect(0.0, 0.0, 0.0, 0.0),
+                boundingBox = element.boundingBox?.toNormalizedBoundingBox() ?: BoundingBox(0.0, 0.0, 0.0, 0.0),
                 cornerPoints = element.cornerPoints?.toNormalizedPoints() ?: emptyArray(),
               )
             }.toTypedArray()

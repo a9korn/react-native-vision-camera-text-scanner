@@ -35,7 +35,7 @@ abstract class HybridTextRecognizerResultSpec: HybridObject() {
   
   @get:DoNotStrip
   @get:Keep
-  abstract val boundingBox: Rect
+  abstract val boundingBox: BoundingBox
   
   @get:DoNotStrip
   @get:Keep

@@ -18,17 +18,19 @@ export interface Point {
 }
 
 /**
- * Represents a Rectangle in the current context's coordinate system.
+ * Represents a bounding box in the current context's coordinate system.
+ * Coordinates are normalized to the range [0, 1] relative to the frame dimensions,
+ * with the origin at the top-left corner.
  */
-export interface Rect {
-  /** The left value (min X) of the Rectangle. */
-  readonly left: number
-  /** The right value (max X) of the Rectangle. */
-  readonly right: number
-  /** The top value (min Y) of the Rectangle. */
-  readonly top: number
-  /** The bottom value (max Y) of the Rectangle. */
-  readonly bottom: number
+export interface BoundingBox {
+  /** The X coordinate of the top-left corner. */
+  readonly x: number
+  /** The Y coordinate of the top-left corner. */
+  readonly y: number
+  /** The width of the bounding box. */
+  readonly width: number
+  /** The height of the bounding box. */
+  readonly height: number
 }
 
 /**
@@ -38,7 +40,7 @@ export interface TextWord {
   /** The text content of this word. */
   readonly text: string
   /** The bounding box of this word, relative to the Frame's coordinates. */
-  readonly boundingBox: Rect
+  readonly boundingBox: BoundingBox
   /** The corner points of this word. */
   readonly cornerPoints: Point[]
 }
@@ -50,7 +52,7 @@ export interface TextLine {
   /** The text content of this line. */
   readonly text: string
   /** The bounding box of this line, relative to the Frame's coordinates. */
-  readonly boundingBox: Rect
+  readonly boundingBox: BoundingBox
   /** The corner points of this line. */
   readonly cornerPoints: Point[]
   /** The words in this line. */
@@ -64,7 +66,7 @@ export interface TextBlock {
   /** The text content of this block. */
   readonly text: string
   /** The bounding box of this block, relative to the Frame's coordinates. */
-  readonly boundingBox: Rect
+  readonly boundingBox: BoundingBox
   /** The corner points of this block. */
   readonly cornerPoints: Point[]
   /** The lines in this block. */
@@ -88,7 +90,7 @@ export interface TextRecognizerResult
    * The bounding box of the complete text recognition result,
    * relative to the input {@linkcode Frame}'s coordinates.
    */
-  readonly boundingBox: Rect
+  readonly boundingBox: BoundingBox
   /**
    * The corner points of the complete text recognition result.
    */

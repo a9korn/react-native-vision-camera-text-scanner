@@ -10,10 +10,10 @@
 #include <fbjni/fbjni.h>
 #include "TextWord.hpp"
 
+#include "BoundingBox.hpp"
+#include "JBoundingBox.hpp"
 #include "JPoint.hpp"
-#include "JRect.hpp"
 #include "Point.hpp"
-#include "Rect.hpp"
 #include <string>
 #include <vector>
 
@@ -38,8 +38,8 @@ namespace margelo::nitro::camera::textrecognizer {
       static const auto clazz = javaClassStatic();
       static const auto fieldText = clazz->getField<jni::JString>("text");
       jni::local_ref<jni::JString> text = this->getFieldValue(fieldText);
-      static const auto fieldBoundingBox = clazz->getField<JRect>("boundingBox");
-      jni::local_ref<JRect> boundingBox = this->getFieldValue(fieldBoundingBox);
+      static const auto fieldBoundingBox = clazz->getField<JBoundingBox>("boundingBox");
+      jni::local_ref<JBoundingBox> boundingBox = this->getFieldValue(fieldBoundingBox);
       static const auto fieldCornerPoints = clazz->getField<jni::JArrayClass<JPoint>>("cornerPoints");
       jni::local_ref<jni::JArrayClass<JPoint>> cornerPoints = this->getFieldValue(fieldCornerPoints);
       return TextWord(
@@ -64,13 +64,13 @@ namespace margelo::nitro::camera::textrecognizer {
      */
     [[maybe_unused]]
     static jni::local_ref<JTextWord::javaobject> fromCpp(const TextWord& value) {
-      using JSignature = JTextWord(jni::alias_ref<jni::JString>, jni::alias_ref<JRect>, jni::alias_ref<jni::JArrayClass<JPoint>>);
+      using JSignature = JTextWord(jni::alias_ref<jni::JString>, jni::alias_ref<JBoundingBox>, jni::alias_ref<jni::JArrayClass<JPoint>>);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
         jni::make_jstring(value.text),
-        JRect::fromCpp(value.boundingBox),
+        JBoundingBox::fromCpp(value.boundingBox),
         [&]() {
           size_t __size = value.cornerPoints.size();
           jni::local_ref<jni::JArrayClass<JPoint>> __array = jni::JArrayClass<JPoint>::newArray(__size);

@@ -15,15 +15,15 @@
 
 // Forward declaration of `TextBlock` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct TextBlock; }
-// Forward declaration of `Rect` to properly resolve imports.
-namespace margelo::nitro::camera::textrecognizer { struct Rect; }
+// Forward declaration of `BoundingBox` to properly resolve imports.
+namespace margelo::nitro::camera::textrecognizer { struct BoundingBox; }
 // Forward declaration of `Point` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct Point; }
 
 #include <string>
 #include "TextBlock.hpp"
 #include <vector>
-#include "Rect.hpp"
+#include "BoundingBox.hpp"
 #include "Point.hpp"
 
 namespace margelo::nitro::camera::textrecognizer {
@@ -55,7 +55,7 @@ namespace margelo::nitro::camera::textrecognizer {
       // Properties
       virtual std::string getText() = 0;
       virtual std::vector<TextBlock> getBlocks() = 0;
-      virtual Rect getBoundingBox() = 0;
+      virtual BoundingBox getBoundingBox() = 0;
       virtual std::vector<Point> getCornerPoints() = 0;
       virtual double getFrameWidth() = 0;
       virtual double getFrameHeight() = 0;

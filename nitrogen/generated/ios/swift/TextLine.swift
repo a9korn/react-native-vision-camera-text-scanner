@@ -18,7 +18,7 @@ public extension TextLine {
   /**
    * Create a new instance of `TextLine`.
    */
-  init(text: String, boundingBox: Rect, cornerPoints: [Point], words: [TextWord]) {
+  init(text: String, boundingBox: BoundingBox, cornerPoints: [Point], words: [TextWord]) {
     self.init(std.string(text), boundingBox, { () -> bridge.std__vector_Point_ in
       var __vector = bridge.create_std__vector_Point_(cornerPoints.count)
       for __item in cornerPoints {
@@ -40,7 +40,7 @@ public extension TextLine {
   }
   
   @inline(__always)
-  var boundingBox: Rect {
+  var boundingBox: BoundingBox {
     return self.__boundingBox
   }
   

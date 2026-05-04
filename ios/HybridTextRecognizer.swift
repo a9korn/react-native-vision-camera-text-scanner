@@ -11,7 +11,10 @@ import NitroModules
 import AVFoundation
 
 class HybridTextRecognizer: HybridTextRecognizerSpec {
+  private let options: TextRecognizerOptions
+
   init(options: TextRecognizerOptions) {
+    self.options = options
     super.init()
   }
 
@@ -66,6 +69,9 @@ class HybridTextRecognizer: HybridTextRecognizerSpec {
 
     request.recognitionLevel = .accurate
     request.usesLanguageCorrection = true
+    if let languages = options.languages, !languages.isEmpty {
+      request.recognitionLanguages = languages
+    }
 
     let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation.toCGImagePropertyOrientation(), options: [:])
 

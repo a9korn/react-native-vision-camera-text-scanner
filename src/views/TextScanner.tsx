@@ -29,12 +29,12 @@ export function TextScanner({
   isActive,
   style,
   ...textRecognizerOptions
-}: TextScannerOptions): React.ReactElement {
+}: TextScannerOptions): React.ReactElement | null {
   const device = useCameraDevice('back')
   const output = useTextRecognizerOutput(textRecognizerOptions)
 
   if (device == null) {
-    throw new Error(`No Camera device available!`)
+    return null
   }
   return (
     <Camera

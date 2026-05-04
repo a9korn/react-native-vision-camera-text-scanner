@@ -71,7 +71,7 @@ class HybridTextRecognizerOutput(
 
   override fun dispose() {
     recognizer.close()
-    executor.close()
+    executor.shutdown()
   }
 
   @OptIn(ExperimentalGetImage::class)

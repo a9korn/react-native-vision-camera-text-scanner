@@ -1,6 +1,6 @@
 {
   "name": "react-native-vision-camera-text-scanner",
-  "version": "5.0.6",
+  "version": "5.0.8",
   "description": "Text scanning plugin for react-native-vision-camera powered by ML Kit.",
   "main": "lib/index",
   "module": "lib/index",
@@ -26,11 +26,12 @@
     "README.md"
   ],
   "scripts": {
+    "prepare": "bun run build",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf android/build node_modules/**/android/build lib",
     "build": "tsc",
     "typescript": "tsc",
-    "specs": "tsc --noEmit false && nitrogen",
+    "specs": "nitrogen",
     "release": "release-it"
   },
   "keywords": [
@@ -65,10 +66,10 @@
   },
   "devDependencies": {
     "@types/react": "19.2.14",
-    "nitrogen": "0.35.4",
-    "react": "19.2.3",
-    "react-native": "0.84.0",
-    "react-native-nitro-modules": "0.35.4",
+    "nitrogen": "^0.35.6",
+    "react": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-nitro-modules": "^0.35.6",
     "react-native-vision-camera": "*",
     "typescript": "5.9.3"
   },

@@ -14,8 +14,8 @@ namespace VisionCameraTextScanner { class HybridTextRecognizerResultSpec_cxx; }
 
 // Forward declaration of `TextBlock` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct TextBlock; }
-// Forward declaration of `Rect` to properly resolve imports.
-namespace margelo::nitro::camera::textrecognizer { struct Rect; }
+// Forward declaration of `BoundingBox` to properly resolve imports.
+namespace margelo::nitro::camera::textrecognizer { struct BoundingBox; }
 // Forward declaration of `Point` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct Point; }
 // Forward declaration of `TextLine` to properly resolve imports.
@@ -26,7 +26,7 @@ namespace margelo::nitro::camera::textrecognizer { struct TextWord; }
 #include <string>
 #include "TextBlock.hpp"
 #include <vector>
-#include "Rect.hpp"
+#include "BoundingBox.hpp"
 #include "Point.hpp"
 #include "TextLine.hpp"
 #include "TextWord.hpp"
@@ -85,7 +85,7 @@ namespace margelo::nitro::camera::textrecognizer {
       auto __result = _swiftPart.getBlocks();
       return __result;
     }
-    inline Rect getBoundingBox() noexcept override {
+    inline BoundingBox getBoundingBox() noexcept override {
       return _swiftPart.getBoundingBox();
     }
     inline std::vector<Point> getCornerPoints() noexcept override {

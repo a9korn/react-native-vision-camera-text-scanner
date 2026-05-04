@@ -22,7 +22,7 @@ data class TextBlock(
   val text: String,
   @DoNotStrip
   @Keep
-  val boundingBox: Rect,
+  val boundingBox: BoundingBox,
   @DoNotStrip
   @Keep
   val cornerPoints: Array<Point>,
@@ -40,7 +40,7 @@ data class TextBlock(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(text: String, boundingBox: Rect, cornerPoints: Array<Point>, lines: Array<TextLine>): TextBlock {
+    private fun fromCpp(text: String, boundingBox: BoundingBox, cornerPoints: Array<Point>, lines: Array<TextLine>): TextBlock {
       return TextBlock(text, boundingBox, cornerPoints, lines)
     }
   }

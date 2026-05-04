@@ -4,7 +4,7 @@ import com.margelo.nitro.camera.HybridCameraOutputSpec
 
 class HybridTextRecognizerFactory : HybridTextRecognizerFactorySpec() {
   override fun createTextRecognizer(options: TextRecognizerOptions): HybridTextRecognizerSpec {
-    return HybridTextRecognizer()
+    return HybridTextRecognizer(options)
   }
 
   override fun createTextRecognizerOutput(

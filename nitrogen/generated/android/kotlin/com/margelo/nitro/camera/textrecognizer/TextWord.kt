@@ -22,7 +22,7 @@ data class TextWord(
   val text: String,
   @DoNotStrip
   @Keep
-  val boundingBox: Rect,
+  val boundingBox: BoundingBox,
   @DoNotStrip
   @Keep
   val cornerPoints: Array<Point>
@@ -37,7 +37,7 @@ data class TextWord(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(text: String, boundingBox: Rect, cornerPoints: Array<Point>): TextWord {
+    private fun fromCpp(text: String, boundingBox: BoundingBox, cornerPoints: Array<Point>): TextWord {
       return TextWord(text, boundingBox, cornerPoints)
     }
   }

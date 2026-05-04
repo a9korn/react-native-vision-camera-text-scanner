@@ -12,7 +12,7 @@ public protocol HybridTextRecognizerResultSpec_protocol: HybridObject {
   // Properties
   var text: String { get }
   var blocks: [TextBlock] { get }
-  var boundingBox: Rect { get }
+  var boundingBox: BoundingBox { get }
   var cornerPoints: [Point] { get }
   var frameWidth: Double { get }
   var frameHeight: Double { get }

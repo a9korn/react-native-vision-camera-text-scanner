@@ -1,3 +1,21 @@
 node_modules/
 *.tgz
 .DS_Store
+
+# Android build artifacts
+.cxx/
+.gradle/
+android/build/
+
+# IDE
+.idea/
+.vscode/
+
+# TypeScript
+*.tsbuildinfo
+
+# Generated build output
+lib/
+
+# Temp files
+*.docx

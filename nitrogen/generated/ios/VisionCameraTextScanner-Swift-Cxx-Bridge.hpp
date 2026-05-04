@@ -8,6 +8,8 @@
 #pragma once
 
 // Forward declarations of C++ defined types
+// Forward declaration of `BoundingBox` to properly resolve imports.
+namespace margelo::nitro::camera::textrecognizer { struct BoundingBox; }
 // Forward declaration of `HybridCameraOutputSpec` to properly resolve imports.
 namespace margelo::nitro::camera { class HybridCameraOutputSpec; }
 // Forward declaration of `HybridFrameSpec` to properly resolve imports.
@@ -20,8 +22,6 @@ namespace margelo::nitro::camera::textrecognizer { class HybridTextRecognizerRes
 namespace margelo::nitro::camera::textrecognizer { class HybridTextRecognizerSpec; }
 // Forward declaration of `Point` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct Point; }
-// Forward declaration of `Rect` to properly resolve imports.
-namespace margelo::nitro::camera::textrecognizer { struct Rect; }
 // Forward declaration of `TextBlock` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct TextBlock; }
 // Forward declaration of `TextLine` to properly resolve imports.
@@ -44,11 +44,11 @@ namespace VisionCameraTextScanner { class HybridTextRecognizerResultSpec_cxx; }
 namespace VisionCameraTextScanner { class HybridTextRecognizerSpec_cxx; }
 
 // Include C++ defined types
+#include "BoundingBox.hpp"
 #include "HybridTextRecognizerFactorySpec.hpp"
 #include "HybridTextRecognizerResultSpec.hpp"
 #include "HybridTextRecognizerSpec.hpp"
 #include "Point.hpp"
-#include "Rect.hpp"
 #include "TextBlock.hpp"
 #include "TextLine.hpp"
 #include "TextRecognizerOutputResolution.hpp"

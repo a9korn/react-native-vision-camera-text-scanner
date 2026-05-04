@@ -141,7 +141,7 @@ open class HybridTextRecognizerResultSpec_cxx {
     }
   }
   
-  public final var boundingBox: Rect {
+  public final var boundingBox: BoundingBox {
     @inline(__always)
     get {
       return self.__implementation.boundingBox

@@ -24,6 +24,14 @@ apply from: "./fix-prefab.gradle"
 
 if (isNewArchitectureEnabled()) {
   apply plugin: "com.facebook.react"
+
+  react {
+    // Restrict codegen to the library's own src/ only.
+    // Without this, the plugin walks react-native's own spec files (e.g. NativeDOM.js
+    // from the library-root's node_modules/react-native which may be a different RN
+    // version) and fails with "Unrecognized generic type 'unknown'".
+    jsRootDir = file("../src")
+  }
 }
 
 def getExtOrDefault(name) {

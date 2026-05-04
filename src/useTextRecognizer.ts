@@ -14,6 +14,7 @@ export function useTextRecognizer({
 }: TextRecognizerOptions): TextRecognizer {
   return useMemo(
     () => createTextRecognizer({ languages: languages }),
-    [languages],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [JSON.stringify(languages)],
   )
 }

@@ -31,66 +31,76 @@ final class HybridTextRecognizerResult: HybridTextRecognizerResultSpec {
 
   // Vision Framework uses bottom-left origin with normalized (0–1) coordinates.
   // Convert to top-left origin (UIKit/RN convention) so callers get a consistent system.
-  private func visionRectToTopLeft(_ box: CGRect) -> Rect {
-    return Rect(
-      left: box.origin.x,
-      right: box.origin.x + box.size.width,
-      top: 1.0 - (box.origin.y + box.size.height),
-      bottom: 1.0 - box.origin.y
+  private func visionBoxToBoundingBox(_ box: CGRect) -> BoundingBox {
+    return BoundingBox(
+      x: box.origin.x,
+      y: 1.0 - (box.origin.y + box.size.height),
+      width: box.size.width,
+      height: box.size.height
     )
   }
 
-  var boundingBox: Rect {
-    guard let firstObservation = observations.first else {
-      return Rect(left: 0, right: 0, top: 0, bottom: 0)
+  var boundingBox: BoundingBox {
+    guard !observations.isEmpty else {
+      return BoundingBox(x: 0, y: 0, width: 0, height: 0)
     }
-    return visionRectToTopLeft(firstObservation.boundingBox)
+    // Compute union of all observation bounding boxes (Vision coords: bottom-left origin).
+    let minX = observations.map { $0.boundingBox.minX }.min()!
+    let minY = observations.map { $0.boundingBox.minY }.min()!
+    let maxX = observations.map { $0.boundingBox.maxX }.max()!
+    let maxY = observations.map { $0.boundingBox.maxY }.max()!
+    let unionBox = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    return visionBoxToBoundingBox(unionBox)
   }
 
   var cornerPoints: [Point] {
-    guard let firstObservation = observations.first else {
+    guard !observations.isEmpty else {
       return []
     }
-    let box = firstObservation.boundingBox
-    let r = visionRectToTopLeft(box)
+    let b = boundingBox
     return [
-      Point(x: r.left, y: r.top),
-      Point(x: r.right, y: r.top),
-      Point(x: r.right, y: r.bottom),
-      Point(x: r.left, y: r.bottom),
+      Point(x: b.x,           y: b.y),
+      Point(x: b.x + b.width, y: b.y),
+      Point(x: b.x + b.width, y: b.y + b.height),
+      Point(x: b.x,           y: b.y + b.height),
     ]
   }
 
+  // Vision Framework does not provide a block/line/word hierarchy — each VNRecognizedTextObservation
+  // is a single recognized text region. We map each observation to one Block containing one Line
+  // containing one Word. This is an intentional simplification; the structure mirrors Android ML Kit's
+  // output shape for API consistency.
   var blocks: [TextBlock] {
     return observations.map { observation in
       guard let candidate = observation.topCandidates(1).first else {
         return TextBlock(
           text: "",
-          boundingBox: Rect(left: 0, right: 0, top: 0, bottom: 0),
+          boundingBox: BoundingBox(x: 0, y: 0, width: 0, height: 0),
           cornerPoints: [],
           lines: []
         )
       }
 
-      let r = visionRectToTopLeft(observation.boundingBox)
+      let b = visionBoxToBoundingBox(observation.boundingBox)
+      let corners = [
+        Point(x: b.x,           y: b.y),
+        Point(x: b.x + b.width, y: b.y),
+        Point(x: b.x + b.width, y: b.y + b.height),
+        Point(x: b.x,           y: b.y + b.height),
+      ]
       return TextBlock(
         text: candidate.string,
-        boundingBox: r,
-        cornerPoints: [
-          Point(x: r.left, y: r.top),
-          Point(x: r.right, y: r.top),
-          Point(x: r.right, y: r.bottom),
-          Point(x: r.left, y: r.bottom),
-        ],
+        boundingBox: b,
+        cornerPoints: corners,
         lines: [
           TextLine(
             text: candidate.string,
-            boundingBox: r,
+            boundingBox: b,
             cornerPoints: [],
             words: [
               TextWord(
                 text: candidate.string,
-                boundingBox: r,
+                boundingBox: b,
                 cornerPoints: []
               )
             ]

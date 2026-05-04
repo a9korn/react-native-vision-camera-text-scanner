@@ -28,15 +28,15 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
-// Forward declaration of `Rect` to properly resolve imports.
-namespace margelo::nitro::camera::textrecognizer { struct Rect; }
+// Forward declaration of `BoundingBox` to properly resolve imports.
+namespace margelo::nitro::camera::textrecognizer { struct BoundingBox; }
 // Forward declaration of `Point` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct Point; }
 // Forward declaration of `TextLine` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct TextLine; }
 
 #include <string>
-#include "Rect.hpp"
+#include "BoundingBox.hpp"
 #include "Point.hpp"
 #include <vector>
 #include "TextLine.hpp"
@@ -49,13 +49,13 @@ namespace margelo::nitro::camera::textrecognizer {
   struct TextBlock final {
   public:
     std::string text     SWIFT_PRIVATE;
-    Rect boundingBox     SWIFT_PRIVATE;
+    BoundingBox boundingBox     SWIFT_PRIVATE;
     std::vector<Point> cornerPoints     SWIFT_PRIVATE;
     std::vector<TextLine> lines     SWIFT_PRIVATE;
 
   public:
     TextBlock() = default;
-    explicit TextBlock(std::string text, Rect boundingBox, std::vector<Point> cornerPoints, std::vector<TextLine> lines): text(text), boundingBox(boundingBox), cornerPoints(cornerPoints), lines(lines) {}
+    explicit TextBlock(std::string text, BoundingBox boundingBox, std::vector<Point> cornerPoints, std::vector<TextLine> lines): text(text), boundingBox(boundingBox), cornerPoints(cornerPoints), lines(lines) {}
 
   public:
     friend bool operator==(const TextBlock& lhs, const TextBlock& rhs) = default;
@@ -72,7 +72,7 @@ namespace margelo::nitro {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::camera::textrecognizer::TextBlock(
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text"))),
-        JSIConverter<margelo::nitro::camera::textrecognizer::Rect>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"))),
+        JSIConverter<margelo::nitro::camera::textrecognizer::BoundingBox>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"))),
         JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::Point>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"))),
         JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::TextLine>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))
       );
@@ -80,7 +80,7 @@ namespace margelo::nitro {
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::camera::textrecognizer::TextBlock& arg) {
       jsi::Object obj(runtime);
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "text"), JSIConverter<std::string>::toJSI(runtime, arg.text));
-      obj.setProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"), JSIConverter<margelo::nitro::camera::textrecognizer::Rect>::toJSI(runtime, arg.boundingBox));
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "boundingBox"), JSIConverter<margelo::nitro::camera::textrecognizer::BoundingBox>::toJSI(runtime, arg.boundingBox));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints"), JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::Point>>::toJSI(runtime, arg.cornerPoints));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "lines"), JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::TextLine>>::toJSI(runtime, arg.lines));
       return obj;
@@ -94,7 +94,7 @@ namespace margelo::nitro {
         return false;
       }
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "text")))) return false;
-      if (!JSIConverter<margelo::nitro::camera::textrecognizer::Rect>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox")))) return false;
+      if (!JSIConverter<margelo::nitro::camera::textrecognizer::BoundingBox>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "boundingBox")))) return false;
       if (!JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::Point>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "cornerPoints")))) return false;
       if (!JSIConverter<std::vector<margelo::nitro::camera::textrecognizer::TextLine>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "lines")))) return false;
       return true;

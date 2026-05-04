@@ -1,12 +1,7 @@
 import { NitroModules } from 'react-native-nitro-modules'
-import type {
-  CameraOutput,
-  CameraSession,
-  Frame,
-} from 'react-native-vision-camera'
+import type { CameraOutput } from 'react-native-vision-camera'
 import type {
   TextRecognizer,
-  TextRecognizerResult,
   TextRecognizerFactory,
   TextRecognizerOptions,
   TextRecognizerOutputOptions,

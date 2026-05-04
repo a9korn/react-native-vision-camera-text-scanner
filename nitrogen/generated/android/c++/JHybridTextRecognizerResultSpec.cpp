@@ -9,8 +9,8 @@
 
 // Forward declaration of `TextBlock` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct TextBlock; }
-// Forward declaration of `Rect` to properly resolve imports.
-namespace margelo::nitro::camera::textrecognizer { struct Rect; }
+// Forward declaration of `BoundingBox` to properly resolve imports.
+namespace margelo::nitro::camera::textrecognizer { struct BoundingBox; }
 // Forward declaration of `Point` to properly resolve imports.
 namespace margelo::nitro::camera::textrecognizer { struct Point; }
 // Forward declaration of `TextLine` to properly resolve imports.
@@ -22,8 +22,8 @@ namespace margelo::nitro::camera::textrecognizer { struct TextWord; }
 #include "TextBlock.hpp"
 #include <vector>
 #include "JTextBlock.hpp"
-#include "Rect.hpp"
-#include "JRect.hpp"
+#include "BoundingBox.hpp"
+#include "JBoundingBox.hpp"
 #include "Point.hpp"
 #include "JPoint.hpp"
 #include "TextLine.hpp"
@@ -80,8 +80,8 @@ namespace margelo::nitro::camera::textrecognizer {
       return __vector;
     }();
   }
-  Rect JHybridTextRecognizerResultSpec::getBoundingBox() {
-    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JRect>()>("getBoundingBox");
+  BoundingBox JHybridTextRecognizerResultSpec::getBoundingBox() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JBoundingBox>()>("getBoundingBox");
     auto __result = method(_javaPart);
     return __result->toCpp();
   }

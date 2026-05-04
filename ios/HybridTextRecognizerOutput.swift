@@ -13,6 +13,7 @@ import NitroModules
 class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
   private var delegate: Delegate? = nil
   private let queue: DispatchQueue
+  private let options: TextRecognizerOutputOptions
   let output = AVCaptureVideoDataOutput()
   let requiresAudioInput: Bool = false
   let requiresDepthFormat: Bool = false
@@ -25,19 +26,18 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
   }
 
   init(options: TextRecognizerOutputOptions) {
+    self.options = options
     self.queue = DispatchQueue(label: "com.margelo.camera.textrecognizer")
     super.init()
 
-    var isScanning = false
+    let busy = DispatchSemaphore(value: 1)
     self.delegate = Delegate(onSampleBuffer: { [weak self] sampleBuffer in
       guard let self else { return }
-      if isScanning { return }
-
-      isScanning = true
+      guard busy.wait(timeout: .now()) == .success else { return }
 
       guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
         options.onError(RuntimeError.error(withMessage: "Failed to get pixel buffer from sample buffer!"))
-        isScanning = false
+        busy.signal()
         return
       }
 
@@ -48,7 +48,7 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
       let frameW = isRotated ? bufH : bufW
       let frameH = isRotated ? bufW : bufH
       self.performVisionRecognition(pixelBuffer: pixelBuffer, orientation: self.outputOrientation, frameWidth: frameW, frameHeight: frameH) { results in
-        isScanning = false
+        busy.signal()
         options.onTextScanned(results)
       }
     })
@@ -80,6 +80,9 @@ class HybridTextRecognizerOutput: HybridCameraOutputSpec, NativeCameraOutput {
 
     request.recognitionLevel = .accurate
     request.usesLanguageCorrection = true
+    if let languages = options.languages, !languages.isEmpty {
+      request.recognitionLanguages = languages
+    }
 
     let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: orientation.toCGImagePropertyOrientation(), options: [:])
 

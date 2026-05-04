@@ -2,13 +2,14 @@ package com.margelo.nitro.camera.textrecognizer
 
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
-import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.margelo.nitro.camera.HybridFrameSpec
 import com.margelo.nitro.camera.textrecognizer.extensions.toInputImage
 import com.margelo.nitro.core.Promise
 
-class HybridTextRecognizer : HybridTextRecognizerSpec() {
-  private val recognizer: TextRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+// Note: ML Kit's Latin recognizer does not support language hints via TextRecognizerOptions.Builder,
+// so `options.languages` is stored but not forwarded to the recognizer.
+class HybridTextRecognizer(private val options: TextRecognizerOptions) : HybridTextRecognizerSpec() {
+  private val recognizer: TextRecognizer = TextRecognition.getClient(com.google.mlkit.vision.text.latin.TextRecognizerOptions.DEFAULT_OPTIONS)
 
   override fun recognizeText(frame: HybridFrameSpec): Array<HybridTextRecognizerResultSpec> {
     val image = frame.toInputImage()
