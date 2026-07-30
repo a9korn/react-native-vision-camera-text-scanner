@@ -29,7 +29,7 @@ namespace margelo::nitro::camera::textrecognizer {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "TextRecognizerOutputOptions" and the the Kotlin data class "TextRecognizerOutputOptions".
+   * The C++ JNI bridge between the C++ struct "TextRecognizerOutputOptions" and the Kotlin data class "TextRecognizerOutputOptions".
    */
   struct JTextRecognizerOutputOptions final: public jni::JavaClass<JTextRecognizerOutputOptions> {
   public:
@@ -52,16 +52,16 @@ namespace margelo::nitro::camera::textrecognizer {
       static const auto fieldOnError = clazz->getField<JFunc_void_std__exception_ptr::javaobject>("onError");
       jni::local_ref<JFunc_void_std__exception_ptr::javaobject> onError = this->getFieldValue(fieldOnError);
       return TextRecognizerOutputOptions(
-        languages != nullptr ? std::make_optional([&]() {
-          size_t __size = languages->size();
+        languages != nullptr ? std::make_optional([&](auto&& __input) {
+          size_t __size = __input->size();
           std::vector<std::string> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            auto __element = languages->getElement(__i);
+            auto __element = __input->getElement(__i);
             __vector.push_back(__element->toStdString());
           }
           return __vector;
-        }()) : std::nullopt,
+        }(languages)) : std::nullopt,
         outputResolution != nullptr ? std::make_optional(outputResolution->toCpp()) : std::nullopt,
         [&]() -> std::function<void(const std::vector<std::shared_ptr<HybridTextRecognizerResultSpec>>& /* results */)> {
           if (onTextScanned->isInstanceOf(JFunc_void_std__vector_std__shared_ptr_HybridTextRecognizerResultSpec___cxx::javaClassStatic())) [[likely]] {
@@ -95,16 +95,16 @@ namespace margelo::nitro::camera::textrecognizer {
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
-        value.languages.has_value() ? [&]() {
-          size_t __size = value.languages.value().size();
+        value.languages.has_value() ? [&](auto&& __input) {
+          size_t __size = __input.size();
           jni::local_ref<jni::JArrayClass<jni::JString>> __array = jni::JArrayClass<jni::JString>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            const auto& __element = value.languages.value()[__i];
+            const auto& __element = __input[__i];
             auto __elementJni = jni::make_jstring(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }() : nullptr,
+        }(value.languages.value()) : nullptr,
         value.outputResolution.has_value() ? JTextRecognizerOutputResolution::fromCpp(value.outputResolution.value()) : nullptr,
         JFunc_void_std__vector_std__shared_ptr_HybridTextRecognizerResultSpec___cxx::fromCpp(value.onTextScanned),
         JFunc_void_std__exception_ptr_cxx::fromCpp(value.onError)

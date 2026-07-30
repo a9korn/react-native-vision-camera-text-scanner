@@ -10,7 +10,6 @@ package com.margelo.nitro.camera.textrecognizer
 import androidx.annotation.Keep
 import com.facebook.jni.HybridData
 import com.facebook.proguard.annotations.DoNotStrip
-import dalvik.annotation.optimization.FastNative
 
 
 /**
@@ -59,7 +58,6 @@ class Func_void_std__vector_std__shared_ptr_HybridTextRecognizerResultSpec___cxx
   override fun invoke(results: Array<HybridTextRecognizerResultSpec>): Unit
     = invoke_cxx(results)
 
-  @FastNative
   private external fun invoke_cxx(results: Array<HybridTextRecognizerResultSpec>): Unit
 }
 

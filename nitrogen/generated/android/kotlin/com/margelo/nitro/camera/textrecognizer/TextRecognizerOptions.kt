@@ -9,6 +9,7 @@ package com.margelo.nitro.camera.textrecognizer
 
 import androidx.annotation.Keep
 import com.facebook.proguard.annotations.DoNotStrip
+import java.util.Objects
 
 
 /**
@@ -22,6 +23,18 @@ data class TextRecognizerOptions(
   val languages: Array<String>?
 ) {
   /* primary constructor */
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is TextRecognizerOptions) return false
+    return Objects.deepEquals(this.languages, other.languages)
+  }
+
+  override fun hashCode(): Int {
+    return arrayOf<Any?>(
+      languages
+    ).contentDeepHashCode()
+  }
 
   companion object {
     /**

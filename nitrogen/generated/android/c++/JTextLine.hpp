@@ -24,7 +24,7 @@ namespace margelo::nitro::camera::textrecognizer {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "TextLine" and the the Kotlin data class "TextLine".
+   * The C++ JNI bridge between the C++ struct "TextLine" and the Kotlin data class "TextLine".
    */
   struct JTextLine final: public jni::JavaClass<JTextLine> {
   public:
@@ -49,26 +49,26 @@ namespace margelo::nitro::camera::textrecognizer {
       return TextLine(
         text->toStdString(),
         boundingBox->toCpp(),
-        [&]() {
-          size_t __size = cornerPoints->size();
+        [&](auto&& __input) {
+          size_t __size = __input->size();
           std::vector<Point> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            auto __element = cornerPoints->getElement(__i);
+            auto __element = __input->getElement(__i);
             __vector.push_back(__element->toCpp());
           }
           return __vector;
-        }(),
-        [&]() {
-          size_t __size = words->size();
+        }(cornerPoints),
+        [&](auto&& __input) {
+          size_t __size = __input->size();
           std::vector<TextWord> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            auto __element = words->getElement(__i);
+            auto __element = __input->getElement(__i);
             __vector.push_back(__element->toCpp());
           }
           return __vector;
-        }()
+        }(words)
       );
     }
 
@@ -85,26 +85,26 @@ namespace margelo::nitro::camera::textrecognizer {
         clazz,
         jni::make_jstring(value.text),
         JBoundingBox::fromCpp(value.boundingBox),
-        [&]() {
-          size_t __size = value.cornerPoints.size();
+        [&](auto&& __input) {
+          size_t __size = __input.size();
           jni::local_ref<jni::JArrayClass<JPoint>> __array = jni::JArrayClass<JPoint>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            const auto& __element = value.cornerPoints[__i];
+            const auto& __element = __input[__i];
             auto __elementJni = JPoint::fromCpp(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }(),
-        [&]() {
-          size_t __size = value.words.size();
+        }(value.cornerPoints),
+        [&](auto&& __input) {
+          size_t __size = __input.size();
           jni::local_ref<jni::JArrayClass<JTextWord>> __array = jni::JArrayClass<JTextWord>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            const auto& __element = value.words[__i];
+            const auto& __element = __input[__i];
             auto __elementJni = JTextWord::fromCpp(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }()
+        }(value.words)
       );
     }
   };

@@ -35,16 +35,16 @@ namespace margelo::nitro::camera::textrecognizer {
      */
     void invoke(const std::vector<std::shared_ptr<HybridTextRecognizerResultSpec>>& results) const {
       static const auto method = javaClassStatic()->getMethod<void(jni::alias_ref<jni::JArrayClass<JHybridTextRecognizerResultSpec::JavaPart>> /* results */)>("invoke");
-      method(self(), [&]() {
-        size_t __size = results.size();
+      method(self(), [&](auto&& __input) {
+        size_t __size = __input.size();
         jni::local_ref<jni::JArrayClass<JHybridTextRecognizerResultSpec::JavaPart>> __array = jni::JArrayClass<JHybridTextRecognizerResultSpec::JavaPart>::newArray(__size);
         for (size_t __i = 0; __i < __size; __i++) {
-          const auto& __element = results[__i];
+          const auto& __element = __input[__i];
           auto __elementJni = std::dynamic_pointer_cast<JHybridTextRecognizerResultSpec>(__element)->getJavaPart();
           __array->setElement(__i, *__elementJni);
         }
         return __array;
-      }());
+      }(results));
     }
   };
 
@@ -62,16 +62,16 @@ namespace margelo::nitro::camera::textrecognizer {
      * Invokes the C++ `std::function<...>` this `JFunc_void_std__vector_std__shared_ptr_HybridTextRecognizerResultSpec___cxx` instance holds.
      */
     void invoke_cxx(jni::alias_ref<jni::JArrayClass<JHybridTextRecognizerResultSpec::JavaPart>> results) {
-      _func([&]() {
-              size_t __size = results->size();
-              std::vector<std::shared_ptr<HybridTextRecognizerResultSpec>> __vector;
-              __vector.reserve(__size);
-              for (size_t __i = 0; __i < __size; __i++) {
-                auto __element = results->getElement(__i);
-                __vector.push_back(__element->getJHybridTextRecognizerResultSpec());
-              }
-              return __vector;
-            }());
+      _func([&](auto&& __input) {
+        size_t __size = __input->size();
+        std::vector<std::shared_ptr<HybridTextRecognizerResultSpec>> __vector;
+        __vector.reserve(__size);
+        for (size_t __i = 0; __i < __size; __i++) {
+          auto __element = __input->getElement(__i);
+          __vector.push_back(__element->getJHybridTextRecognizerResultSpec());
+        }
+        return __vector;
+      }(results));
     }
 
   public:

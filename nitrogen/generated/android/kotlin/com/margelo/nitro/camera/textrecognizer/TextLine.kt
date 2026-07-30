@@ -9,6 +9,7 @@ package com.margelo.nitro.camera.textrecognizer
 
 import androidx.annotation.Keep
 import com.facebook.proguard.annotations.DoNotStrip
+import java.util.Objects
 
 
 /**
@@ -31,6 +32,24 @@ data class TextLine(
   val words: Array<TextWord>
 ) {
   /* primary constructor */
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is TextLine) return false
+    return Objects.deepEquals(this.text, other.text)
+      && Objects.deepEquals(this.boundingBox, other.boundingBox)
+      && Objects.deepEquals(this.cornerPoints, other.cornerPoints)
+      && Objects.deepEquals(this.words, other.words)
+  }
+
+  override fun hashCode(): Int {
+    return arrayOf<Any?>(
+      text,
+      boundingBox,
+      cornerPoints,
+      words
+    ).contentDeepHashCode()
+  }
 
   companion object {
     /**

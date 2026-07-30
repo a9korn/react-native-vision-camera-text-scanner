@@ -22,7 +22,7 @@ namespace margelo::nitro::camera::textrecognizer {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "TextWord" and the the Kotlin data class "TextWord".
+   * The C++ JNI bridge between the C++ struct "TextWord" and the Kotlin data class "TextWord".
    */
   struct JTextWord final: public jni::JavaClass<JTextWord> {
   public:
@@ -45,16 +45,16 @@ namespace margelo::nitro::camera::textrecognizer {
       return TextWord(
         text->toStdString(),
         boundingBox->toCpp(),
-        [&]() {
-          size_t __size = cornerPoints->size();
+        [&](auto&& __input) {
+          size_t __size = __input->size();
           std::vector<Point> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            auto __element = cornerPoints->getElement(__i);
+            auto __element = __input->getElement(__i);
             __vector.push_back(__element->toCpp());
           }
           return __vector;
-        }()
+        }(cornerPoints)
       );
     }
 
@@ -71,16 +71,16 @@ namespace margelo::nitro::camera::textrecognizer {
         clazz,
         jni::make_jstring(value.text),
         JBoundingBox::fromCpp(value.boundingBox),
-        [&]() {
-          size_t __size = value.cornerPoints.size();
+        [&](auto&& __input) {
+          size_t __size = __input.size();
           jni::local_ref<jni::JArrayClass<JPoint>> __array = jni::JArrayClass<JPoint>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            const auto& __element = value.cornerPoints[__i];
+            const auto& __element = __input[__i];
             auto __elementJni = JPoint::fromCpp(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }()
+        }(value.cornerPoints)
       );
     }
   };

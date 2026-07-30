@@ -69,16 +69,16 @@ namespace margelo::nitro::camera::textrecognizer {
   std::vector<TextBlock> JHybridTextRecognizerResultSpec::getBlocks() {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<jni::JArrayClass<JTextBlock>>()>("getBlocks");
     auto __result = method(_javaPart);
-    return [&]() {
-      size_t __size = __result->size();
+    return [&](auto&& __input) {
+      size_t __size = __input->size();
       std::vector<TextBlock> __vector;
       __vector.reserve(__size);
       for (size_t __i = 0; __i < __size; __i++) {
-        auto __element = __result->getElement(__i);
+        auto __element = __input->getElement(__i);
         __vector.push_back(__element->toCpp());
       }
       return __vector;
-    }();
+    }(__result);
   }
   BoundingBox JHybridTextRecognizerResultSpec::getBoundingBox() {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<JBoundingBox>()>("getBoundingBox");
@@ -88,16 +88,16 @@ namespace margelo::nitro::camera::textrecognizer {
   std::vector<Point> JHybridTextRecognizerResultSpec::getCornerPoints() {
     static const auto method = _javaPart->javaClassStatic()->getMethod<jni::local_ref<jni::JArrayClass<JPoint>>()>("getCornerPoints");
     auto __result = method(_javaPart);
-    return [&]() {
-      size_t __size = __result->size();
+    return [&](auto&& __input) {
+      size_t __size = __input->size();
       std::vector<Point> __vector;
       __vector.reserve(__size);
       for (size_t __i = 0; __i < __size; __i++) {
-        auto __element = __result->getElement(__i);
+        auto __element = __input->getElement(__i);
         __vector.push_back(__element->toCpp());
       }
       return __vector;
-    }();
+    }(__result);
   }
   double JHybridTextRecognizerResultSpec::getFrameWidth() {
     static const auto method = _javaPart->javaClassStatic()->getMethod<double()>("getFrameWidth");

@@ -15,7 +15,7 @@ namespace margelo::nitro::camera::textrecognizer {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ enum "TextRecognizerOutputResolution" and the the Kotlin enum "TextRecognizerOutputResolution".
+   * The C++ JNI bridge between the C++ enum "TextRecognizerOutputResolution" and the Kotlin enum "TextRecognizerOutputResolution".
    */
   struct JTextRecognizerOutputResolution final: public jni::JavaClass<JTextRecognizerOutputResolution> {
   public:

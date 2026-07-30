@@ -9,6 +9,7 @@ package com.margelo.nitro.camera.textrecognizer
 
 import androidx.annotation.Keep
 import com.facebook.proguard.annotations.DoNotStrip
+import java.util.Objects
 
 
 /**
@@ -35,6 +36,24 @@ data class TextRecognizerOutputOptions(
    */
   constructor(languages: Array<String>?, outputResolution: TextRecognizerOutputResolution?, onTextScanned: (results: Array<HybridTextRecognizerResultSpec>) -> Unit, onError: (error: Throwable) -> Unit):
          this(languages, outputResolution, Func_void_std__vector_std__shared_ptr_HybridTextRecognizerResultSpec___java(onTextScanned), Func_void_std__exception_ptr_java(onError))
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (other !is TextRecognizerOutputOptions) return false
+    return Objects.deepEquals(this.languages, other.languages)
+      && Objects.deepEquals(this.outputResolution, other.outputResolution)
+      && Objects.deepEquals(this.onTextScanned, other.onTextScanned)
+      && Objects.deepEquals(this.onError, other.onError)
+  }
+
+  override fun hashCode(): Int {
+    return arrayOf<Any?>(
+      languages,
+      outputResolution,
+      onTextScanned,
+      onError
+    ).contentDeepHashCode()
+  }
 
   companion object {
     /**

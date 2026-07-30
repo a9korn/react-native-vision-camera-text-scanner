@@ -19,7 +19,7 @@ namespace margelo::nitro::camera::textrecognizer {
   using namespace facebook;
 
   /**
-   * The C++ JNI bridge between the C++ struct "TextRecognizerOptions" and the the Kotlin data class "TextRecognizerOptions".
+   * The C++ JNI bridge between the C++ struct "TextRecognizerOptions" and the Kotlin data class "TextRecognizerOptions".
    */
   struct JTextRecognizerOptions final: public jni::JavaClass<JTextRecognizerOptions> {
   public:
@@ -36,16 +36,16 @@ namespace margelo::nitro::camera::textrecognizer {
       static const auto fieldLanguages = clazz->getField<jni::JArrayClass<jni::JString>>("languages");
       jni::local_ref<jni::JArrayClass<jni::JString>> languages = this->getFieldValue(fieldLanguages);
       return TextRecognizerOptions(
-        languages != nullptr ? std::make_optional([&]() {
-          size_t __size = languages->size();
+        languages != nullptr ? std::make_optional([&](auto&& __input) {
+          size_t __size = __input->size();
           std::vector<std::string> __vector;
           __vector.reserve(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            auto __element = languages->getElement(__i);
+            auto __element = __input->getElement(__i);
             __vector.push_back(__element->toStdString());
           }
           return __vector;
-        }()) : std::nullopt
+        }(languages)) : std::nullopt
       );
     }
 
@@ -60,16 +60,16 @@ namespace margelo::nitro::camera::textrecognizer {
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
-        value.languages.has_value() ? [&]() {
-          size_t __size = value.languages.value().size();
+        value.languages.has_value() ? [&](auto&& __input) {
+          size_t __size = __input.size();
           jni::local_ref<jni::JArrayClass<jni::JString>> __array = jni::JArrayClass<jni::JString>::newArray(__size);
           for (size_t __i = 0; __i < __size; __i++) {
-            const auto& __element = value.languages.value()[__i];
+            const auto& __element = __input[__i];
             auto __elementJni = jni::make_jstring(__element);
             __array->setElement(__i, *__elementJni);
           }
           return __array;
-        }() : nullptr
+        }(value.languages.value()) : nullptr
       );
     }
   };
