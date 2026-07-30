@@ -9,7 +9,7 @@ Real-time text scanning plugin for [react-native-vision-camera](https://github.c
 ## Requirements
 
 - `react-native-vision-camera` >= 5.0.0
-- `react-native-nitro-modules` >= 0.35.0
+- `react-native-nitro-modules` >= 0.36.0
 - iOS 15.1+
 - Android API 24+
 
@@ -121,32 +121,34 @@ function CameraScreen() {
 ```ts
 type TextRecognizerResult = {
   text: string           // Full raw text of the result
-  boundingBox: Rect
+  boundingBox: BoundingBox
   cornerPoints: Point[]
   blocks: TextBlock[]
+  frameWidth: number     // Frame width in pixels (upright display orientation)
+  frameHeight: number    // Frame height in pixels (upright display orientation)
 }
 
 type TextBlock = {
   text: string
-  boundingBox: Rect
+  boundingBox: BoundingBox
   cornerPoints: Point[]
   lines: TextLine[]
 }
 
 type TextLine = {
   text: string
-  boundingBox: Rect
+  boundingBox: BoundingBox
   cornerPoints: Point[]
   words: TextWord[]
 }
 
 type TextWord = {
   text: string
-  boundingBox: Rect
+  boundingBox: BoundingBox
   cornerPoints: Point[]
 }
 
-type Rect = { x: number; y: number; width: number; height: number }
+type BoundingBox = { x: number; y: number; width: number; height: number }
 type Point = { x: number; y: number }
 ```
 

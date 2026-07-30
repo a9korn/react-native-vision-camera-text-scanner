@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.0.9] - 2026-07-30
+
+### Dependencies & Build
+- Bumped `react-native-nitro-modules` and `nitrogen` to `^0.36.4`
+- Bumped `react-native-vision-camera` devDependency to `^5.2.0`
+- Regenerated Nitrogen native C++ & Kotlin bindings for Android
+- Added `.claude/` to `.gitignore`
+- Updated `README.md` documentation with `BoundingBox` and `frameWidth`/`frameHeight` types
+
 ## [5.0.8] - 2026-05-04
 
 ### Breaking Changes
